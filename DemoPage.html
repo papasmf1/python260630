@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DemoPage - HTML5 / CSS3 / JavaScript</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: rgba(255, 255, 255, 0.82);
+      --panel-border: rgba(15, 23, 42, 0.08);
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-2: #14b8a6;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+    }
+
+    body.dark {
+      --bg: #0b1220;
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-border: rgba(148, 163, 184, 0.16);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-2: #2dd4bf;
+      --shadow: 0 18px 40px rgba(2, 6, 23, 0.42);
+      --code-bg: #020617;
+      --code-text: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.20), transparent 30%),
+        radial-gradient(circle at top right, rgba(20, 184, 166, 0.18), transparent 26%),
+        linear-gradient(135deg, var(--bg), color-mix(in srgb, var(--bg) 78%, #ffffff 22%));
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .brand h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      letter-spacing: -0.03em;
+    }
+
+    .brand p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .toggle {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, filter 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .toggle:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .summary {
+      grid-column: span 7;
+      padding: 24px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      color: var(--accent);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .summary h2,
+    .panel h3 {
+      margin: 0 0 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .summary p,
+    .panel p,
+    li {
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .stats {
+      grid-column: span 5;
+      display: grid;
+      gap: 18px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .stat {
+      padding: 22px;
+      min-height: 150px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .stat strong {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      color: var(--text);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      padding: 22px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .panel:nth-child(2) { animation-delay: 0.05s; }
+    .panel:nth-child(3) { animation-delay: 0.1s; }
+
+    pre {
+      margin: 16px 0 0;
+      padding: 18px;
+      border-radius: 18px;
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: "Cascadia Mono", "Consolas", monospace;
+    }
+
+    .demo-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .demo-btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: color-mix(in srgb, var(--accent) 18%, white);
+      color: var(--text);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--accent) 25%, white);
+    }
+
+    .output {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px 0 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      header, .hero, .grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        display: grid;
+      }
+
+      .summary, .stats {
+        grid-column: auto;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1>HTML5, CSS3, JavaScript 한눈에 보기</h1>
+        <p>이 예제는 한 파일 안에 웹의 기본 구조와 스타일, 그리고 간단한 동작까지 모두 담은 학습용 페이지입니다. 오른쪽 버튼으로 다크 모드를 바꾸고, 아래 예제로 HTML5 시맨틱 태그, CSS3 스타일, JavaScript 이벤트를 직접 확인해 보세요.</p>
+      </div>
+      <button class="toggle" id="themeToggle">다크 모드 전환</button>
+    </header>
+
+    <section class="hero">
+      <article class="card summary">
+        <div class="badge-row">
+          <span class="badge">HTML5 구조</span>
+          <span class="badge">CSS3 디자인</span>
+          <span class="badge">JavaScript 상호작용</span>
+        </div>
+        <h2>웹페이지의 3가지 핵심 요소를 함께 학습</h2>
+        <p>HTML은 뼈대, CSS는 보이는 모습, JavaScript는 반응하는 동작을 담당합니다. 이 페이지는 세 가지를 분리해서 보이면서도 하나의 문서 안에서 함께 움직이도록 구성했습니다.</p>
+        <p>아래의 예시들은 단순한 설명이 아니라 실제로 페이지에 적용되는 코드 조각입니다. 학습하면서 코드를 바꿔보면 결과가 바로 눈에 보입니다.</p>
+      </article>
+
+      <aside class="stats">
+        <div class="card stat">
+          <span>현재 접속 시각</span>
+          <strong id="clock">--:--:--</strong>
+        </div>
+        <div class="card stat">
+          <span>클릭 카운터</span>
+          <strong id="count">0</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <article class="card panel">
+        <h3>HTML5 예시</h3>
+        <p>시맨틱 태그를 사용하면 문서의 의미가 더 명확해집니다.</p>
+        <pre><code>&lt;header&gt;사이트 제목과 메뉴&lt;/header&gt;
+&lt;main&gt;
+  &lt;section&gt;주요 콘텐츠&lt;/section&gt;
+  &lt;article&gt;독립적인 글&lt;/article&gt;
+&lt;/main&gt;
+&lt;footer&gt;하단 정보&lt;/footer&gt;</code></pre>
+      </article>
+
+      <article class="card panel">
+        <h3>CSS3 예시</h3>
+        <p>그라디언트, 그림자, 반응형 레이아웃을 함께 사용해 보세요.</p>
+        <pre><code>.card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}</code></pre>
+      </article>
+
+      <article class="card panel">
+        <h3>JavaScript 예시</h3>
+        <p>버튼 클릭과 시계 업데이트처럼 간단한 동작을 만들 수 있습니다.</p>
+        <div class="demo-box">
+          <button class="demo-btn" id="addCount">카운터 올리기</button>
+          <span>현재 값: <span class="output" id="liveCount">0</span></span>
+        </div>
+        <pre><code>document.querySelector('#addCount').addEventListener('click', () =&gt; {
+  count += 1;
+  countView.textContent = count;
+});</code></pre>
+      </article>
+    </section>
+
+    <section class="card panel" style="margin-top: 18px;">
+      <h3>학습 포인트</h3>
+      <ul>
+        <li>HTML5: section, article, aside 같은 의미 있는 구조를 사용합니다.</li>
+        <li>CSS3: 변수, 그라디언트, 반응형 레이아웃, 애니메이션을 확인할 수 있습니다.</li>
+        <li>JavaScript: 버튼 클릭, DOM 선택, 실시간 시계 갱신을 연습할 수 있습니다.</li>
+      </ul>
+    </section>
+
+    <footer>DemoPage.html 하나로 HTML5, CSS3, JavaScript의 기본을 함께 연습할 수 있습니다.</footer>
+  </div>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const clock = document.getElementById('clock');
+    const countView = document.getElementById('count');
+    const liveCount = document.getElementById('liveCount');
+    const addCount = document.getElementById('addCount');
+
+    let count = 0;
+
+    function updateClock() {
+      const now = new Date();
+      clock.textContent = now.toLocaleTimeString('ko-KR', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+
+    function syncCounter() {
+      countView.textContent = String(count);
+      liveCount.textContent = String(count);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+    });
+
+    addCount.addEventListener('click', () => {
+      count += 1;
+      syncCounter();
+    });
+
+    updateClock();
+    syncCounter();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
