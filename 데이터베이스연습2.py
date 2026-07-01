@@ -1,9 +1,8 @@
-# 데이터베이스연습1.py 
+# 데이터베이스연습2.py 
 import sqlite3
 #연결객체(파일에 저장하는 경우) 
-#conn = sqlite3.connect('c:\\work\\test.db')
-#메모리에서 임시 작업
-conn = sqlite3.connect(':memory:')
+conn = sqlite3.connect('c:\\work\\sample.db')
+
 #커서객체를 리턴 
 cur = conn.cursor()
 #테이블 생성
@@ -22,12 +21,9 @@ cur.executemany("INSERT INTO PhoneBook VALUES (?, ?);", data)
 #조회하기 
 cur.execute("SELECT * FROM PhoneBook;")
 #선택한 블럭 주석처리: ctrl + /
-# for row in cur:
-#     print(row)
-print("---fetchone()---")
-print(cur.fetchone())
-print("---fetchmany(2)---")
-print(cur.fetchmany(2))
-print("---fetchall()---")
-cur.execute("SELECT * FROM PhoneBook;")
-print(cur.fetchall())
+for row in cur:
+    print(row)
+
+#정상적으로 종료
+conn.commit() #변경사항 저장
+conn.close() #연결객체 닫기
