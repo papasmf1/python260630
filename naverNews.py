@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from openpyxl import Workbook
 
 
 headers = {
@@ -117,9 +118,35 @@ def crawl_news_article(article_url):
     return title, content
 
 
+def save_news_to_excel(news_rows, output_path="naver_result.xlsx"):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "naver_news"
+
+    headers_row = ["검색어", "순번", "기사제목", "언론사", "시간", "요약", "링크", "본문"]
+    worksheet.append(headers_row)
+
+    for row in news_rows:
+        worksheet.append(
+            [
+                row.get("query", ""),
+                row.get("index", ""),
+                row.get("title", ""),
+                row.get("source", ""),
+                row.get("time", ""),
+                row.get("summary", ""),
+                row.get("url", ""),
+                row.get("content", ""),
+            ]
+        )
+
+    workbook.save(output_path)
+
+
 if __name__ == "__main__":
     query = "반도체"
     news_list = get_news_items(query, max_results=5)
+    saved_rows = []
 
     for i, item in enumerate(news_list, 1):
         print(f"\n[{i}] 제목: {item['title']}")
@@ -135,5 +162,25 @@ if __name__ == "__main__":
             title, content = crawl_news_article(item["url"])
             print(f"기사 제목: {title}")
             print(f"본문:\n{content[:1000]}")
+            item["article_title"] = title
+            item["content"] = content
         except Exception as e:
             print(f"크롤링 실패: {e}")
+            item["article_title"] = ""
+            item["content"] = ""
+
+        saved_rows.append(
+            {
+                "query": query,
+                "index": i,
+                "title": item.get("article_title") or item.get("title", ""),
+                "source": item.get("source", ""),
+                "time": item.get("time", ""),
+                "summary": item.get("summary", ""),
+                "url": item.get("url", ""),
+                "content": item.get("content", ""),
+            }
+        )
+
+    save_news_to_excel(saved_rows, "naver_result.xlsx")
+    print("\n엑셀 저장 완료: naver_result.xlsx")
