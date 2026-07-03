@@ -56,7 +56,7 @@ class DemoForm(QMainWindow):
 
         for n in range(0, 10):
             url = (
-                "https://www.clien.net/service/board/sold"
+                "https://www.clien.net/service/board/sold" + 
                 "?&od=T31&po=" + str(n)
             )
 
@@ -64,15 +64,13 @@ class DemoForm(QMainWindow):
             req = urllib.request.Request(url, headers = hdr)
             #웹페이지를 실행한 결과를 문자열로 읽기
             data = urllib.request.urlopen(req).read()
-            #한글이 깨지지 않게 디코딩 
-            page = data.decode('utf-8', 'ignore')
-            soup = BeautifulSoup(page, "html.parser")
+            soup = BeautifulSoup(data, "html.parser")
             items = soup.find_all("a", attrs={"class": "list_subject"})
-
             with open("clien.txt", "a+", encoding="utf-8") as f:
                 for item in items:
                     try:
                         title = item.text.strip()
+                        href = item['href']
 
                         if re.search(self.lineEdit.text(), title):
                             title = title.replace("\t", "")
@@ -80,7 +78,7 @@ class DemoForm(QMainWindow):
 
                             link = (
                                 "https://www.clien.net"
-                                + item["href"]
+                                + href
                             )
 
                             f.write(title + "\n")
@@ -112,3 +110,16 @@ if __name__ == "__main__":
     myForm = DemoForm()
     myForm.show()
     app.exec()
+
+
+# <div class="list_title " data-role="list-title" data-toggle-custom="dropdown"> 
+# 					<a class="list_subject" href="/service/board/sold/19220159?od=T31&amp;po=0&amp;category=0&amp;groupCd=" data-role="cut-string">
+						 
+# 								<span class="category fixed" title="판매">판매</span>
+# 						<span class="subject_fixed" data-role="list-title-text" title="애플 정품 USB-C 디지털 AV 멀티포트 어댑터 미개봉 판매합니다.">
+# 							애플 정품 USB-C 디지털 AV 멀티포트 어댑터 미개봉 판매합니다.
+# 						</span>
+# 					</a>
+					 
+# 						<span class="icon_pic fa fa-picture-o"></span>
+# 				</div>

@@ -10,22 +10,29 @@ for n in range(0,10):
         #클리앙의 중고장터 주소 
         data ='https://www.clien.net/service/board/sold?&od=T31&po=' + str(n)
         #웹브라우져 헤더 추가 
-        req = urllib.request.Request(data, \
-                                    headers = hdr)
+        req = urllib.request.Request(data, headers = hdr)
         data = urllib.request.urlopen(req).read()
-        page = data.decode('utf-8', 'ignore')
-        soup = BeautifulSoup(page, 'html.parser')
-        list = soup.findAll('a', attrs={'class':'list_subject'})
-
+        soup = BeautifulSoup(data, 'html.parser')
+        list = soup.find_all('div', attrs={'data-role':'list-title'})
         for item in list:
                 try:
-                        #<a class='list_subject'><span>text</span><span>text</span>
-                        span = item.contents[1]
-                        span2 = span.nextSibling.nextSibling
-                        title = span2.text 
+                        title = item.find('a').text.strip() 
+                        href = item.find('a')['href']
                         if (re.search('아이폰', title)):
                                 print(title.strip())
-                                print('https://www.clien.net'  + item['href'])
+                                print('https://www.clien.net'  + href)
                 except:
                         pass
         
+
+# <div class="list_title " data-role="list-title" data-toggle-custom="dropdown"> 
+# 					<a class="list_subject" href="/service/board/sold/19220159?od=T31&amp;po=0&amp;category=0&amp;groupCd=" data-role="cut-string">
+						 
+# 								<span class="category fixed" title="판매">판매</span>
+# 						<span class="subject_fixed" data-role="list-title-text" title="애플 정품 USB-C 디지털 AV 멀티포트 어댑터 미개봉 판매합니다.">
+# 							애플 정품 USB-C 디지털 AV 멀티포트 어댑터 미개봉 판매합니다.
+# 						</span>
+# 					</a>
+					 
+# 						<span class="icon_pic fa fa-picture-o"></span>
+# 				</div>
